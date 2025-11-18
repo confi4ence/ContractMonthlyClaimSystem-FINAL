@@ -1,0 +1,146 @@
+/* === PMWeb-LEVEL PROFESSIONAL THEME === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: #f8f9fc;
+    color: #2d3748;
+}
+
+/* Sidebar */
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background: #1e293b;
+    color: #fff;
+    transition: all 0.3s;
+    position: fixed;
+    height: 100vh;
+    z-index: 1000;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+}
+
+    #sidebar.active {
+        margin-left: -250px;
+    }
+
+    #sidebar .sidebar-header {
+        background: #0f172a;
+        padding: 20px;
+        text-align: center;
+        border-bottom: 1px solid #334155;
+    }
+
+    #sidebar ul.components {
+        padding: 20px 0;
+    }
+
+    #sidebar ul li a {
+        padding: 12px 20px;
+        display: block;
+        color: #cbd5e1;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+
+        #sidebar ul li a:hover, #sidebar ul li.active > a {
+            color: #fff;
+            background: #334155;
+        }
+
+        #sidebar ul li a i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+/* Top bar */
+.navbar {
+    background: #fff !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+#sidebarCollapse {
+    background: #f97316;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+
+/* Status Badges */
+.badge-pending {
+    background: #fbbf24;
+    color: #451a03;
+}
+
+.badge-verified {
+    background: #60a5fa;
+    color: white;
+}
+
+.badge-approved {
+    background: #34d399;
+    color: white;
+}
+
+.badge-rejected {
+    background: #f87171;
+    color: white;
+}
+
+/* Tables */
+.table-professional {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+    .table-professional thead {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        color: white;
+    }
+
+/* Buttons */
+.btn-primary {
+    background: #1e293b;
+    border: none;
+}
+
+.btn-success {
+    background: #059669;
+}
+
+.btn-warning {
+    background: #d97706;
+}
+
+.btn-danger {
+    background: #dc2626;
+}
+
+.btn-info {
+    background: #0ea5e9;
+}
+
+    .btn-primary:hover, .btn-success:hover, .btn-warning:hover,
+    .btn-danger:hover, .btn-info:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }

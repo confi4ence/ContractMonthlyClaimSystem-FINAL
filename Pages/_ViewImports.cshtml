@@ -1,0 +1,4 @@
+<form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" method="post" class="d-inline">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-link nav-link">Logout</button>
+</form>

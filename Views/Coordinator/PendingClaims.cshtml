@@ -1,0 +1,90 @@
+﻿@model IEnumerable<ContractMonthlyClaimSystem_FINAL.Models.Claim>
+
+<div class="card shadow-lg">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h4><i class="fas fa-clipboard-list"></i> Pending Claims for Verification</h4>
+        <button id="batchApprove" class="btn btn-success btn-sm"><i class="fas fa-check-double"></i> Approve Selected</button>
+    </div>
+    <div class="card-body">
+        <form id="batchForm" asp-action="BatchApprove" method="post">
+            <div class="table-responsive">
+                <table class="table table-professional table-hover">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll" /></th>
+                            <th>Lecturer</th>
+                            <th>Month</th>
+                            <th>Hours</th>
+                            <th>Rate</th>
+                            <th>Total</th>
+                            <th>Document</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><input type="checkbox" name="ids" value="@item.Id" class="form-check-input" /></td>
+                                <td><strong>@item.User?.FullName</strong></td>
+                                <td>@item.Month @item.Year</td>
+                                <td>@item.HoursWorked h</td>
+                                <td>R @item.HourlyRate</td>
+                                <td class="text-success fw-bold">R @item.TotalAmount</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.SupportingDocumentPath))
+                                    {
+                                        <a href="@item.SupportingDocumentPath" target="_blank" class="btn btn-sm btn-info">
+                                            <i class="fas fa-file-pdf"></i> View
+                                        </a>
+                                    }
+                                </td>
+                                <td>
+                                    <button type="submit" formaction="@Url.Action("VerifyClaim", new { id = item.Id })"
+                                            class="btn btn-success btn-sm">
+                                        Verify
+                                    </button>
+                                    <button type="submit" formaction="@Url.Action("RejectClaim", new { id = item.Id })"
+                                            class="btn btn-danger btn-sm">
+                                        Reject
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Select All
+        $('#selectAll').on('click', function () {
+            $('input[name="ids"]').prop('checked', this.checked);
+        });
+
+        // Batch Approve
+        $('#batchApprove').on('click', function () {
+            const selected = $('input[name="ids"]:checked');
+            if (selected.length === 0) {
+                Swal.fire('No claims selected', 'Please select at least one claim', 'warning');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Approve ' + selected.length + ' claims?',
+                text: "This will move them to Manager approval",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Approve All!'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    $('#batchForm').attr('action', '/Coordinator/BatchVerify').submit();
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,127 @@
+﻿@model ContractMonthlyClaimSystem_FINAL.Models.Claim
+@{
+    ViewData["Title"] = "Submit New Claim";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="fas fa-plus-circle"></i> Submit Monthly Claim</h4>
+            </div>
+            <div class="card-body p-5">
+                <form asp-action="Create" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label fw-bold">Claim Month & Year</label>
+                            <div class="row">
+                                <div class="col-7">
+                                    <select asp-for="Month" class="form-select form-select-lg" required>
+                                        <option value="">-- Select Month --</option>
+                                        @for (int m = 1; m <= 12; m++)
+                                        {
+                                            var monthName = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m);
+                                            <option value="@monthName" selected="@(DateTime.Now.Month == m)">@monthName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-5">
+                                    <input asp-for="Year" class="form-control form-control-lg" value="@DateTime.Now.Year" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label fw-bold">Hours Worked</label>
+                            <input asp-for="HoursWorked" class="form-control form-control-lg" id="hours" step="0.5" min="1" max="200" required />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label fw-bold">Hourly Rate (R)</label>
+                            <input asp-for="HourlyRate" class="form-control form-control-lg" id="rate" value="@User.FindFirst("HourlyRate")?.Value" readonly />
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label fw-bold">Total Amount</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-success text-white fw-bold">R</span>
+                                <input type="text" id="total" class="form-control form-control-lg fw-bold text-success" readonly value="0.00" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DRAG & DROP FILE UPLOAD -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Supporting Documents (Timesheet, Proof, etc.)</label>
+                        <div class="border border-2 border-dashed rounded-3 p-5 text-center bg-light"
+                             id="dropzone" style="cursor:pointer; transition:all 0.3s;">
+                            <i class="fas fa-cloud-upload-alt fa-4x text-muted mb-3"></i>
+                            <p class="lead">Drag & drop files here or <span class="text-primary">click to browse</span></p>
+                            <input type="file" name="document" id="fileInput" accept=".pdf,.docx,.xlsx,.jpg,.png" class="d-none" />
+                        </div>
+                        <div id="fileList" class="mt-3"></div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-paper-plane"></i> Submit Claim for Verification
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto calculate total
+        $('#hours, #rate').on('input', function () {
+            let total = (parseFloat($('#hours').val()) || 0) * (parseFloat($('#rate').val()) || 0);
+            $('#total').val(total.toFixed(2));
+        });
+
+        // Drag & Drop + Preview
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+
+        ['dragover', 'dragenter'].forEach(evt => {
+            dropzone.addEventListener(evt, e => {
+                e.preventDefault();
+                dropzone.classList.add('border-primary', 'bg-primary', 'bg-opacity-10');
+            });
+        });
+
+        ['dragleave', 'dragend'].forEach(evt => {
+            dropzone.addEventListener(evt, e => {
+                dropzone.classList.remove('border-primary', 'bg-primary', 'bg-opacity-10');
+            });
+        });
+
+        dropzone.addEventListener('drop', e => {
+            e.preventDefault();
+            dropzone.classList.remove('border-primary', 'bg-primary', 'bg-opacity-10');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        dropzone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+        function handleFiles(files) {
+            fileList.innerHTML = '';
+            [...files].forEach(file => {
+                const div = document.createElement('div');
+                div.className = 'alert alert-success d-flex align-items-center';
+                div.innerHTML = `<i class="fas fa-file me-2"></i> ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+                fileList.appendChild(div);
+            });
+        }
+
+        // Trigger initial calculation
+        $('#hours, #rate').trigger('input');
+    </script>
+}

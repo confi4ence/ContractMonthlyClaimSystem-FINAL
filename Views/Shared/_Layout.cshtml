@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CMCS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="fas fa-briefcase"></i> CMCS</h4>
+            </div>
+            <ul class="list-unstyled components">
+                <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
+                    <a href="/"><i class="fas fa-home"></i> Dashboard</a>
+                </li>
+
+                @if (User.IsInRole("Lecturer") || User.Identity!.IsAuthenticated)
+                {
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Lecturer" ? "active" : "")">
+                        <a href="/Lecturer"><i class="fas fa-user-graduate"></i> My Claims</a>
+                    </li>
+                    <li>
+                        <a href="/Lecturer/Create"><i class="fas fa-plus-circle"></i> Submit Claim</a>
+                    </li>
+                }
+
+                @if (User.IsInRole("Coordinator"))
+                {
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Coordinator" ? "active" : "")">
+                        <a href="/Coordinator/PendingClaims"><i class="fas fa-clipboard-check"></i> Verify Claims</a>
+                    </li>
+                }
+
+                @if (User.IsInRole("Manager"))
+                {
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Manager" ? "active" : "")">
+                        <a href="/Manager/VerifiedClaims"><i class="fas fa-thumbs-up"></i> Approve Claims</a>
+                    </li>
+                }
+
+                @if (User.IsInRole("HR"))
+                {
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "HR" ? "active" : "")">
+                        <a href="/HR/Reports"><i class="fas fa-chart-pie"></i> Reports & Payments</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="ms-auto">
+                        <partial name="_LoginPartial" />
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid mt-4">
+                <main role="main">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+                $(this).toggleClass('active');
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

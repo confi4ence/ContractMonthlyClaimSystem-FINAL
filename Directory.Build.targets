@@ -1,0 +1,34 @@
+<Project>
+  <!-- Guarded diagnostic replacement for the source-copy step. Put this in the solution root. -->
+  <Target Name="_CopyOutOfDateSourceItemsToOutputDirectory"
+          Condition=" '@(_SourceItemsToCopyToOutputDirectory)' != '' "
+          Inputs="@(_SourceItemsToCopyToOutputDirectory)"
+          Outputs="@(_SourceItemsToCopyToOutputDirectory->'$(OutDir)%(TargetPath)')">
+
+    <Message Importance="High" Text="[CopyDiag] OutDir = '$(OutDir)'" />
+    <Message Importance="High" Text="[CopyDiag] Source items: @( _SourceItemsToCopyToOutputDirectory -> '%(FullPath)')" />
+
+    <ItemGroup>
+      <_MissingTargetPath Include="@(_SourceItemsToCopyToOutputDirectory)" Condition="'%(TargetPath)' == ''" />
+    </ItemGroup>
+    <Message Importance="High" Condition="'@(_MissingTargetPath)' != ''"
+             Text="[CopyDiag][ERROR] Missing TargetPath for: @(_MissingTargetPath -> '%(FullPath)')" />
+
+    <ItemGroup>
+      <_ToCopy Include="@(_SourceItemsToCopyToOutputDirectory)" Condition="'%(TargetPath)' != ''">
+        <Src>%(FullPath)</Src>
+        <Dst>$(OutDir)%(TargetPath)</Dst>
+      </_ToCopy>
+    </ItemGroup>
+
+    <Message Importance="High" Text="[CopyDiag] Resolved copy pairs: @_ToCopy -> @( _ToCopy -> '%(Src) => %(Dst)')" />
+
+    <Copy SourceFiles="@(_ToCopy -> '%(Src)')"
+          DestinationFiles="@(_ToCopy -> '%(Dst)')"
+          SkipUnchangedFiles="true">
+      <Output TaskParameter="DestinationFiles" ItemName="FileWrites" />
+    </Copy>
+
+    <Message Importance="High" Text="[CopyDiag] Copied files: @(FileWrites)" />
+  </Target>
+</Project>

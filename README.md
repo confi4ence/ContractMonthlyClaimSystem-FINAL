@@ -16,15 +16,4 @@ A comprehensive WPF application for managing monthly claims submission, verifica
 - ✅ Comprehensive error handling
 - ✅ Unit testing coverage
 
-## 🛠️ Technology Stack
 
-- **Frontend**: WPF (XAML)
-- **Backend**: C# .NET Framework
-- **Testing**: MSTest Framework
-- **Architecture**: MVVM Pattern
-
-## 📋 Prerequisites
-
-- .NET Framework 4.8 or later
-- Windows 10/11
-- Visual Studio 2019 or later
